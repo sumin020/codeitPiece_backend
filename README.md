@@ -1,5 +1,3 @@
-# memory_house_backend
-
 # 기억 저장 및 공유 서비스, 조각집
 
 백엔드 규칙 
