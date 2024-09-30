@@ -1,0 +1,78 @@
+###
+GET http://localhost:3000/api/groups
+
+###
+GET http://localhost:3000/api/groups/1
+
+###
+GET http://localhost:3000/api/posts/2
+
+###
+
+POST http://localhost:3000/api/groups
+Content-Type: application/json
+
+{
+	"name": "string13",
+	"password": "string13",
+	"imageUrl": "string13",
+	"isPublic": false,
+	"introduction": "string13"
+}
+
+###
+PUT http://localhost:3000/api/groups/2
+Content-Type: application/json
+
+{
+	"name": "수정함2",
+  "password": "bbbbb",
+	"imageUrl": "string",
+	"isPublic": false,
+	"introduction": "ㅎㅇㅎㅇ수정햇다"
+}
+###
+
+DELETE http://localhost:3000/api/groups/6
+Content-Type: application/json
+
+{
+  "password": "string4"
+}
+
+
+###
+GET http://localhost:3000/api/groups/2/is-public
+
+###
+POST http://localhost:3000/api/groups/1/like
+
+###
+POST http://localhost:3000/api/groups/1/verify-password
+Content-Type: application/json
+
+{
+  "password": "aaa"
+}
+
+###
+GET http://localhost:3000/api/groups?sortBy=latest 
+
+
+###
+GET http://localhost:3000/api/groups?limit=5&sortBy=mostPosted&isPublic=false
+
+###
+GET http://localhost:3000/api/groups?sortBy=mostPosted
+
+###
+GET http://localhost:3000/api/groups?sortBy=mostLiked
+
+###
+GET http://localhost:3000/api/groups?sortBy=mostBadge
+
+
+
+
+###
+GET http://localhost:3000/api/groups?
