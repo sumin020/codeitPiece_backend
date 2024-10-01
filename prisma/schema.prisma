@@ -9,8 +9,23 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Group {
+  id            Int      @id @default(autoincrement())
+  name          String
+  password      String
+  imageUrl      String
+  isPublic      Boolean   
+  likeCount     Int       @default(0)
+  //badges        Badge[]   @relation()
+  //badgeCount    Int       @default(0)
+  postCount     Int       @default(0) //count로 가져올수잇나
+  createdAt     DateTime  @default(now())
+  introduction  String
+  posts         Post[]    @relation("GroupPosts")
 }
 
 model Post {
@@ -29,6 +44,7 @@ model Post {
   likeCount     Int       @default(0)
   commentCount  Int       @default(0)
   createdAt     DateTime  @default(now())
+  group         Group     @relation(fields: [groupId], references: [id], name: "GroupPosts")
   comments      Comment[] @relation("PostComments")
 }
 
@@ -38,7 +54,7 @@ model Comment {
   content       String
   password      String
   createdAt     DateTime  @default(now())
-  postId    Int
-  post      Post     @relation(fields: [postId], references: [id], name: "PostComments")
+  postId        Int
+  post          Post     @relation(fields: [postId], references: [id], name: "PostComments")
 
 }
