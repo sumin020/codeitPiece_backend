@@ -3,7 +3,7 @@
   "name": "memory_house_backend",
   "version": "1.0.0",
   "description": "백엔드 규칙 \r - 컨벤션 잘 지키기 : 코딩 컨벤션, 커밋 메시지 컨벤션\r - 4시간 동안 해결되지 않는 문제는 수정 필요 상태로 변경\r - 팀 미팅에 적극적으로 참여하기\r - 코드리뷰는 24시간 내에 반드시 하기 (코드 리뷰 후 노션에 피드백 남기기)\r - 팀 미팅 불참 불가\r - 매일 스크럼 시간에 진행 현황 공유 및 컨반보드 최신화\r - 긍정적으로 생각하기",
-  "main": "src/group.js",
+  "main": "src/comment.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -21,6 +21,6 @@
   },
   "scripts": {
     "dev": "nodemon",
-    "start": "node src/group.js"
+    "start": "node src/comment.js"
   }
 }

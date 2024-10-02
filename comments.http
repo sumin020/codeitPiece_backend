@@ -1,0 +1,30 @@
+###조회
+GET http://localhost:3000/api/posts/1/comments
+
+###등록
+POST http://localhost:3000/api/posts/1/comments
+Content-Type: application/json
+
+{
+	"nickname": "익명4",
+	"content": "첫번째 포스트 4번째 댓글",
+	"password": "444"
+}
+
+###수정
+PUT http://localhost:3000/api/comments/4
+Content-Type: application/json
+
+{
+	"nickname": "익명4",
+	"content": "첫번째 포스트 4번째 댓글이에요",
+	"password": "444"
+}
+
+###삭제
+DELETE http://localhost:3000/api/comments/4
+Content-Type: application/json
+
+{
+	"password": "444"
+}
