@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient , Prisma} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -36,7 +36,7 @@ app.post('/api/groups/:id/posts', asyncHandler(async (req, res) => {
     data: postData,
   });
 
-  const updatedGroup = await prisma.group.update({
+  await prisma.group.update({
     where: { id: groupId },
     data: { postCount: { increment: 1 } }, 
   });
@@ -232,12 +232,6 @@ app.get('/api/posts/:id/is-public', asyncHandler(async (req, res) => {
     res.status(200).send({ id: post.id, isPublic: post.isPublic });
   } 
 }));
-
-
-
-
-
-
 
 
 app.listen(3000, () => { console.log('Server Started'); });
