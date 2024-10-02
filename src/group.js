@@ -27,7 +27,9 @@ function asyncHandler(handler) {
 //그룹 목록 조회
 app.get('/api/groups',  asyncHandler (async (req, res) => {
   // 정렬
-  const {offset = 0, limit = 10, sortBy = 'latest', isPublic} = req.query;
+  const {page = 1, pageSize = 10, sortBy = 'latest', keyword = "", isPublic = true} = req.query;
+  const isPublicFilter = isPublic === 'false' ? false : true; //공개 여부
+
   let orderBy;
   switch (sortBy) {
     case 'mostPosted':
@@ -44,23 +46,49 @@ app.get('/api/groups',  asyncHandler (async (req, res) => {
       orderBy = {createdAt: 'desc'};
   }
 
-  // 공개/비공개 구분, 기본은 공개
-  let where = {};
-  if( isPublic === undefined || isPublic === 'true'){
-    where.isPublic = Boolean(true);
-  } else if ( isPublic === 'false' ){
-    where.isPublic = Boolean(false);
-  } else {
-    res.status(400).send({ message: "잘못된 요청입니다" });
-  }
- 
+  const currentPage = parseInt(page);
+  const itemsPerPage = parseInt(pageSize);
+
   const groups = await prisma.group.findMany({
-    where,
+    where : {
+      isPublic : isPublicFilter,
+      OR: [
+        { name: { contains: keyword } }, 
+      ],
+    },
     orderBy,
-    skip: parseInt(offset),
-    take: parseInt(limit),
+    skip: (currentPage - 1) * itemsPerPage,
+    take: itemsPerPage,
+    select: {
+      id: true,
+			name: true,
+			imageUrl: true,
+			isPublic: true,
+			likeCount: true,
+			badgeCount: true,
+			postCount: true,
+			createdAt: true,
+			introduction: true,
+    }
   });
-  res.send(groups);
+  
+  const totalItemCount = await prisma.group.count({
+    where: {
+      isPublic: isPublicFilter,
+      OR: [
+        { name: { contains: keyword } },
+      ],
+    },    
+  });
+  const totalPages = Math.ceil(totalItemCount / pageSize);
+  
+  const groupResponse = {
+    currentPage,
+    totalPages,
+    totalItemCount,
+    data: groups,
+  };
+  res.status(200).send(groupResponse);
 }));
 
 
@@ -71,21 +99,25 @@ app.get('/api/groups/:id', asyncHandler(async (req, res) => {
   const id = Number(req.params.id);
   const group = await prisma.group.findUnique({
     where: { id },
-    include: {
-      comments: true,
+    include:{ 
+      posts : true 
     },
+    //badges [] 추가
   })
-  res.send(group);
+  const { password, badgeCount, ...groupWithoutPasswords } = group;
+  res.status(200).send(groupWithoutPasswords);
 }));
  
 
 
 //그룹 등록
 app.post('/api/groups', asyncHandler(async (req, res) => {
-  const group = await prisma.group.create({
+  const newGroup = await prisma.group.create({
+    //배열 반환
     data: req.body,
   });
-  res.status(201).send(group);
+  const { password : gpwd, badgeCount : bct, ...groupWithoutPasswords } = newGroup;
+  res.status(201).send(groupWithoutPasswords);
 }));
 
 //그룹 수정
@@ -99,14 +131,15 @@ app.put('/api/groups/:id', asyncHandler(async (req, res) => {
   if(!group) { 
     return res.status(404).send({"message": "존재하지 않습니다"})
   }
-
+  
   //그룹 존재 : 비밀번호 맞으면 200, 틀리면 403 반환
   if(req.body.password === group.password){
     const updatedGroup = await prisma.group.update({
       where: { id },
       data: req.body,
     });
-    res.status(200).send(updatedGroup);
+    const { password, badgeCount, ...groupWithoutPasswords } = updatedGroup;
+    res.status(200).send(groupWithoutPasswords);
   } else { 
     res.status(403).send({"message": "비밀번호가 틀렸습니다"}) 
   }

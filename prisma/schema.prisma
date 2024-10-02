@@ -21,9 +21,10 @@ model Group {
   imageUrl      String
   isPublic      Boolean   
   likeCount     Int       @default(0)
-  //badges        Badge[]   @relation()
-  //badgeCount    Int       @default(0)
-  postCount     Int       @default(0) //count로 가져올수잇나
+  badges        Badge[]   @relation("GroupBadges")
+  badgeCount    Int       @default(0)
+  posts         Post[]    @relation("GroupPosts")
+  postCount     Int       @default(0) 
   createdAt     DateTime  @default(now())
   introduction  String
 }
@@ -31,6 +32,7 @@ model Group {
 
 model Post {
   id            Int      @id @default(autoincrement())
+  group         Group    @relation(fields: [groupId], references: [id], name: "GroupPosts")
   groupId       Int      
   nickname      String
   title         String
@@ -46,6 +48,7 @@ model Post {
   commentCount  Int       @default(0)
   createdAt     DateTime  @default(now())
   comments      Comment[] @relation("PostComments")
+  badges        Badge[]   @relation("PostBadges")
 }
 
 model Comment {
@@ -54,10 +57,14 @@ model Comment {
   content       String
   password      String
   createdAt     DateTime  @default(now())
-  postId    Int
-  post      Post     @relation(fields: [postId], references: [id], name: "PostComments")
+  postId        Int
+  post          Post     @relation(fields: [postId], references: [id], name: "PostComments")
 }
 
 model Badge {
   id            Int       @id @default(autoincrement())
+  group         Group    @relation(fields: [groupId], references: [id], name: "GroupBadges") 
+  groupId       Int     
+  post          Post     @relation(fields: [postId], references: [id], name: "PostBadges")
+  postId        Int
 }
