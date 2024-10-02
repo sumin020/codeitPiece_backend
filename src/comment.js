@@ -10,6 +10,7 @@ const app = express();
 app.use(express.json());
 
 
+
 // 댓글 등록
 app.post('/api/posts/:id/comments', asyncHandler(async (req, res) => {
   const postId = Number(req.params.id);
