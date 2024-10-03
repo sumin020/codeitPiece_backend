@@ -2,7 +2,7 @@
 GET http://localhost:3000/api/groups
 
 ###
-GET http://localhost:3000/api/groups/1
+GET http://localhost:3000/api/groups/24
 
 ###
 
@@ -10,39 +10,39 @@ POST http://localhost:3000/api/groups
 Content-Type: application/json
 
 {
-	"name": "string20",
-	"password": "string20",
-	"imageUrl": "string20",
+	"name": "string25",
+	"password": "string25",
+	"imageUrl": "string25",
 	"isPublic": true,
-	"introduction": "string20"
+	"introduction": "string25"
 }
 
 ###
-PUT http://localhost:3000/api/groups/19
+PUT http://localhost:3000/api/groups/24
 Content-Type: application/json
 
 {
-	"name": "수정함199",
-  "password": "string19",
-	"imageUrl": "string19",
+	"name": "수정함24",
+  "password": "string21",
+	"imageUrl": "string25",
 	"isPublic": true,
-	"introduction": "ㅎㅇㅎㅇ수정햇다19"
+	"introduction": "ㅎㅇㅎㅇ수정햇다25"
 }
 ###
 
-DELETE http://localhost:3000/api/groups/21
+DELETE http://localhost:3000/api/groups/25
 Content-Type: application/json
 
 {
-  "password": "string20"
+  "password": "string25"
 }
 
 
 ###
-GET http://localhost:3000/api/groups/2/is-public
+GET http://localhost:3000/api/groups/22/is-public
 
 ###
-POST http://localhost:3000/api/groups/1/like
+POST http://localhost:3000/api/groups/24/like
 
 ###
 POST http://localhost:3000/api/groups/1/verify-password

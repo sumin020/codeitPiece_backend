@@ -6,3 +6,50 @@ Content-Type: multipart/form-data
 	"image": "File"
 }
 
+###
+GET http://localhost:3000/api/posts/1
+
+###
+GET http://localhost:3000/api/groups/1/posts
+
+###
+
+POST http://localhost:3000/api/groups/1/posts
+Content-Type: application/json
+
+{
+	"nickname": "익명이4",
+	"title": "string",
+	"content": "string",
+	"postPassword": "aaa",
+	"groupPassword": "aaa",
+	"imageUrl": "string",
+	"tags": [ "string", "string" ],
+	"location": "string",
+	"moment": "2024-02-21",
+	"isPublic": true
+}
+
+###
+PUT http://localhost:3000/api/posts/1
+Content-Type: application/json
+
+{
+	"nickname": "익명이다",
+	"title": "string",
+	"content": "string",
+	"postPassword": "string",
+	"imageUrl": "string",
+	"tags": [ "string", "string" ],
+	"location": "string",
+	"moment": "2024-02-21",
+	"isPublic": true
+}
+###
+
+DELETE http://localhost:3000/api/groups/25
+Content-Type: application/json
+
+{
+  "password": "string25"
+}
