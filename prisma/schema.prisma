@@ -1,17 +1,15 @@
-// This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "mysql"
-    url      = env("DATABASE_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model Group {
@@ -29,10 +27,8 @@ model Group {
   introduction  String
 }
 
-
 model Post {
   id            Int      @id @default(autoincrement())
-  group         Group    @relation(fields: [groupId], references: [id], name: "GroupPosts")
   groupId       Int      
   nickname      String
   title         String
@@ -47,8 +43,8 @@ model Post {
   likeCount     Int       @default(0)
   commentCount  Int       @default(0)
   createdAt     DateTime  @default(now())
+  group         Group     @relation(fields: [groupId], references: [id], name: "GroupPosts", onDelete: Cascade)
   comments      Comment[] @relation("PostComments")
-  badges        Badge[]   @relation("PostBadges")
 }
 
 model Comment {
@@ -58,13 +54,16 @@ model Comment {
   password      String
   createdAt     DateTime  @default(now())
   postId        Int
-  post          Post     @relation(fields: [postId], references: [id], name: "PostComments")
+  post          Post     @relation(fields: [postId], references: [id], name: "PostComments", onDelete: Cascade)
+
 }
 
 model Badge {
-  id            Int       @id @default(autoincrement())
-  group         Group    @relation(fields: [groupId], references: [id], name: "GroupBadges") 
-  groupId       Int     
-  post          Post     @relation(fields: [postId], references: [id], name: "PostBadges")
-  postId        Int
+  group         Group    @relation(fields: [groupId], references: [id], name: "GroupBadges", onDelete: Cascade) 
+  groupId       Int      @id
+  badge1        Boolean  @default(false)
+  badge2        Boolean  @default(false)
+  badge3        Boolean  @default(false)
+  badge4        Boolean  @default(false)
+  badge5        Boolean  @default(false)
 }
