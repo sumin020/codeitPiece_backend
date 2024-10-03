@@ -90,16 +90,19 @@ groupRouter.route('/')
   //그룹 등록
   .post(asyncHandler(async (req, res) => {
     const newGroup = await req.prisma.group.create({
-      data: req.body, newBadge,
+      data: req.body
     });
-    const newBadge = await req.prisma.badge.create({
+    await req.prisma.badge.create({
       data: {
         groupId: newGroup.id,
       }
     })
     const badges = [];
     const { password : gpwd, badgeCount : bct, ...groupWithoutPasswords } = newGroup;
-    res.status(201).send(groupWithoutPasswords, badges);
+    const groupResponse = {
+      ...groupWithoutPasswords, badges
+    };
+    res.status(201).send(groupResponse);
   }));
 
 
@@ -110,22 +113,23 @@ groupRouter.route('/:id')
   .get(asyncHandler(async (req, res) => {
     // 비공개 그룹일 경우 조회 권한 확인 api 사용 
     const id = Number(req.params.id);
-    const group = await req.prisma.group.findUnique({
+    const updatedGroup = await req.prisma.group.findUnique({
       where: { id },
       include:{ 
         posts : true 
       },
     })
-    const badgeData = await req.prisma.badge.findUnique({ where: { id } });
     const badges = [];
-    for (const key of badgeData) {
-      if (badgeData[key]) { // 칼럼 값이 true인지 확인
+    const badgeData = await req.prisma.badge.findUnique({ where: { groupId : id } });
+    for (const key of Object.keys(badgeData)) {
+      if (badgeData[key] === true) { // 칼럼 값이 true인지 확인
         badges.push(key); // true인 경우 칼럼 이름을 배열에 추가
       }
-      
-    const { password, badgeCount, ...groupWithoutPasswords } = group;
-    res.status(200).send(groupWithoutPasswords, badges);
-  }}))
+    }
+    const { password, badgeCount, ...groupWithoutPasswords } = updatedGroup;
+    const groupResponse = {...groupWithoutPasswords, badges};
+    res.status(200).send(groupResponse);
+  }))
  
 
   //그룹 수정
@@ -140,25 +144,26 @@ groupRouter.route('/:id')
       return res.status(404).send({"message": "존재하지 않습니다"})
     }
 
-    const badgeData = await req.prisma.badge.findUnique({ where: { id } });
-    const badges = [];
-    for (const key of badgeData) {
-      if (badgeData[key]) { // 칼럼 값이 true인지 확인
-        badges.push(key); // true인 경우 칼럼 이름을 배열에 추가
-      }
-
     //그룹 존재 : 비밀번호 맞으면 200, 틀리면 403 반환
     if(req.body.password === group.password){
       const updatedGroup = await req.prisma.group.update({
         where: { id },
         data: req.body,
       });
+      const badges = [];
+      const badgeData = await req.prisma.badge.findUnique({ where: { groupId : id } });
+      for (const key of Object.keys(badgeData)) {
+        if (badgeData[key] === true) { // 칼럼 값이 true인지 확인
+          badges.push(key); // true인 경우 칼럼 이름을 배열에 추가
+        }
+      }
       const { password, badgeCount, ...groupWithoutPasswords } = updatedGroup;
-      res.status(200).send(groupWithoutPasswords, badges);
+      const groupResponse = {...groupWithoutPasswords, badges};
+      res.status(200).send(groupResponse);
     } else { 
       res.status(403).send({"message": "비밀번호가 틀렸습니다"}) 
     }
-  }}))
+  }))
 
 
   //그룹 삭제
@@ -210,35 +215,36 @@ groupRouter.post('/:id/verify-password', asyncHandler(async (req, res) => {
 
 //그룹 공감하기
 groupRouter.post('/:id/like', asyncHandler(async (req, res) => {
-    const id = Number(req.params.id);
-    const group = await req.prisma.group.findUnique({
-      where: { id },
-    });
-    if (group) {
-      await req.prisma.group.update({
-        where: { id },
-        data: { likeCount : {increment: 1,}},
-      });
+  const id = Number(req.params.id);
+  const group = await req.prisma.group.findUnique({
+    where: { id },
+  });
+  if (group) {
     if (group.likeCount + 1 >= 10000) {
       const groupBadge = await req.prisma.badge.findUnique({
         where: { id },
         select: { badge4: true },
       });
-  
-    if (groupBadge && !groupBadge.badge4) {
-      await req.prisma.badge.update({
-        where: { id },
-        data: { badge4: true },
-      });
-  
-      await req.prisma.group.update({
-        where: { id },
-        data: { badgeCount: { increment: 1 } }, 
-      });
-    }
-    res.status(200).send({"message": "그룹 공감하기 성공"});
+      
+      if (groupBadge && !groupBadge.badge4) {
+        await req.prisma.badge.update({
+          where: { id },
+          data: { badge4: true },
+        });
+        
+        await req.prisma.group.update({
+          where: { id },
+          data: { badgeCount: { increment: 1 } }, 
+        });
+      }
+    } 
+  await req.prisma.group.update({
+    where: { id },
+    data: { likeCount : {increment: 1,}},
+  });
+  res.status(200).send({"message": "그룹 공감하기 성공"});
   } else {res.status(404).send({"message": "존재하지 않습니다"}) }
-}}));
+}));
 
 setInterval(async () => {
   const oneYearAgo = new Date();
