@@ -1,5 +1,5 @@
 ###조회
-GET http://localhost:3000/api/posts/1/comments
+GET http://localhost:3000/api/posts/4
 
 ###등록
 POST http://localhost:3000/api/posts/1/comments
@@ -27,4 +27,166 @@ Content-Type: application/json
 
 {
 	"password": "444"
+}
+
+###
+POST http://localhost:3000/api/posts/78/comments
+Content-Type: application/json
+
+{
+  "nickname": "sfiups",
+  "content": "esfsd",
+  "password": "afdcx"
+}
+
+###
+PUT http://localhost:3000/api/comments/26
+Content-Type: application/json
+
+{
+  "nickname": "sfs",
+  "content": "e",
+  "password": "afdcx"
+}
+###
+PUT http://localhost:3000//api/posts/1
+Content-Type: application/json
+
+{
+  "nickname": "sfs",
+  "content": "e",
+  "password": "afdcx"
+}
+###
+
+
+
+DELETE http://localhost:3000/api/comments/18
+Content-Type: application/json
+
+{
+  "password": "afdcx"
+}
+
+###
+
+POST http://localhost:3000/api/groups/1/posts
+Content-Type: application/json
+
+{
+   "nickname": "string",
+   "title": "string",
+   "content": "string",
+   "postPassword": "string",
+   "groupPassword": "string",
+   "imageUrl": "string",
+   "tags": [ "string", "string" ],
+   "location": "string",
+   "moment": "2024-02-21",
+   "isPublic": true
+}
+
+###
+PUT http://localhost:3000/api/posts/2
+Content-Type: application/json
+
+{
+   "nickname": "닉네임",
+   "title": "타이틀",
+   "content": "내용",
+   "postPassword": "asdf",
+   "imageUrl": "string",
+   "tags": [ "태그", "토글" ],
+   "location": "string",
+   "moment": "2024-02-21",
+   "isPublic": false
+}
+
+###
+DELETE http://localhost:3000/api/posts/4
+Content-Type: application/json
+
+{
+  "postPassword": "string"
+}
+
+###
+
+POST http://localhost:3000/api/posts/1/verify-password
+Content-Type: application/json
+
+{
+  "postPassword": "12341234"
+}
+
+###
+POST http://localhost:3000/api/posts/4/like
+Content-Type: application/json
+
+{
+  "postPassword": "string"
+}
+
+###
+
+GET http://localhost:3000/api/posts/23
+
+###
+
+GET http://localhost:3000/api/posts/1/is-public
+
+###
+GET http://localhost:3000/api/groups/9/posts
+
+###
+GET http://localhost:3000/api/groups/1/posts?page=1&pageSize=10&sortBy=latest&keyword=&isPublic=true
+
+
+###조회
+GET http://localhost:3000/api/groups/1/posts
+
+###
+GET http://localhost:3000/api/groups/1/posts?sortBy=latest
+
+
+###
+GET http://localhost:3000/api/groups/2/posts?&sortBy=mostCommented&isPublic=false&keyword=타
+
+###
+GET http://localhost:3000/api/groups/1/posts?sortBy=mostLiked
+
+
+###댓글
+POST http://localhost:3000/api/posts/2/comments
+Content-Type: application/json
+
+{
+	"nickname": "string",
+	"content": "string",
+	"password": "string"
+}
+
+###
+PUT http://localhost:3000/api/comments/5
+Content-Type: application/json
+
+{
+  "nickname": "수정됨",
+	"content": "string",
+	"password": "string"
+}
+###
+DELETE http://localhost:3000/api/comments/29
+Content-Type: application/json
+
+{
+  "password": "string"
+}
+
+###
+GET http://localhost:3000/api/posts/2/comments
+Content-Type: application/json
+
+{
+  "postPassword": "12341234"
 }

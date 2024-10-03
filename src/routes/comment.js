@@ -89,7 +89,7 @@ commentRouter.route('/comments/:id')
         data: req.body,
       });
 
-      const { password, ...commentWithoutPassword } = updatedComment;
+      const { password, postId, ...commentWithoutPassword } = updatedComment;
       res.status(200).send(commentWithoutPassword);
     } else {
       res.status(403).send({ message: '비밀번호가 틀렸습니다' });
@@ -112,8 +112,12 @@ commentRouter.route('/comments/:id')
     if (comment.password === password) {
       await req.prisma.comment.delete({
         where: { id }, 
-        data: { commentCount: { decrement: 1 } },
       });
+      await req.prisma.post.update({
+        where: { id: comment.postId },
+        data: { commentCount: { increment: 1 } },
+      });
+
       res.status(200).send({ message: '답글 삭제 성공' });
     } else {
       res.status(403).send({ message: '비밀번호가 틀렸습니다' });

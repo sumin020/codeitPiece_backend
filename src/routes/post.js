@@ -126,15 +126,22 @@ postRouter.route('/groups/:id/posts')
         orderBy = {createdAt: 'desc'};
     }
 
+    // 필터링 조건 설정
+    const where = {
+      groupId: groupId,
+      isPublic: isPublicFilter,
+    };
+   
+    // keyword가 있을 때만 OR 조건 추가
+    if (keyword) {
+      where.OR = [
+        { title: { contains: keyword } },
+        { tags: { array_contains: keyword } },
+      ];
+    }
+
     const posts = await req.prisma.post.findMany({
-      where: {
-        groupId: groupId,  
-        isPublic: isPublicFilter, 
-        OR: [
-          { title: { contains: keyword } }, 
-          { tags: { has: keyword } },         
-        ],
-      },
+      where,
       orderBy,  
       skip: (currentPage - 1) * itemsPerPage, 
       take: itemsPerPage,  
@@ -153,16 +160,7 @@ postRouter.route('/groups/:id/posts')
       },
     });
 
-    const totalItemCount = await req.prisma.post.count({
-      where: {
-        groupId: groupId,        
-        isPublic: isPublicFilter,
-        OR: [
-          { title: { contains: keyword } },
-          { tags: { has: keyword } },
-        ],
-      },    
-    });
+    const totalItemCount = await req.prisma.post.count({ where });
 
     const totalPages = Math.ceil(totalItemCount / itemsPerPage);
 
