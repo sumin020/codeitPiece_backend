@@ -115,7 +115,7 @@ commentRouter.route('/comments/:id')
       });
       await req.prisma.post.update({
         where: { id: comment.postId },
-        data: { commentCount: { increment: 1 } },
+        data: { commentCount: { decrement: 1 } },
       });
 
       res.status(200).send({ message: '답글 삭제 성공' });
