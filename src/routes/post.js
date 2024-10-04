@@ -230,6 +230,12 @@ postRouter.route('/posts/:id')
       await req.prisma.post.delete({
         where: { id }, 
       });
+      
+      await req.prisma.group.update({
+        where: { id: post.groupId },
+        data: { postCount: { decrement: 1 } },
+      });
+      
       res.status(200).send({ message: '게시글 삭제 성공' });
     } else {
       res.status(403).send({ message: '비밀번호가 틀렸습니다' });
